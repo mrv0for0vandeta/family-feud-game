@@ -27,16 +27,20 @@ io.on('connection', (socket) => {
 
         // Send current state if it exists
         if (gameStates.has(partyCode)) {
+            console.log(`📤 Sending existing state to ${socket.id}`);
             socket.emit('game-state', gameStates.get(partyCode));
+        } else {
+            console.log(`ℹ️ No existing state for party: ${partyCode}`);
         }
     });
 
     // Update game state
     socket.on('update-state', ({ partyCode, state }) => {
+        console.log(`📥 Received state update from ${socket.id} for party: ${partyCode}, Action: ${state.lastAction?.type}`);
         gameStates.set(partyCode, state);
         // Broadcast to all clients in the party room
         io.to(partyCode).emit('game-state', state);
-        console.log(`State updated for party: ${partyCode}`);
+        console.log(`📤 Broadcasted state to party: ${partyCode}`);
     });
 
     socket.on('disconnect', () => {

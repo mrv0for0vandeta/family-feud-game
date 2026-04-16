@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .connected {
+            background: #22c55e;
+        }
+
+        .disconnected {
+            background: #ef4444;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        #log {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔌 Socket.IO Connection Test</h1>
+
+    <div id="status" class="status disconnected">
+        Status: Disconnected
+    </div>
+
+    <div>
+        <label>Party Code: <input type="text" id="partyCode" value="TEST123" /></label>
+        <button onclick="joinParty()">Join Party</button>
+        <button onclick="sendTestUpdate()">Send Test Update</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <h3>Console Log:</h3>
+    <div id="log"></div>
+
+    <script>
+        const SOCKET_URL = 'http://10.152.36.46:3001';
+        let socket = null;
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function updateStatus(connected) {
+            const statusDiv = document.getElementById('status');
+            if (connected) {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = 'Status: Connected ✅';
+            } else {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = 'Status: Disconnected ❌';
+            }
+        }
+
+        function initSocket() {
+            log('🔌 Initializing socket connection to: ' + SOCKET_URL);
+
+            if (!window.io) {
+                log('❌ Socket.IO not loaded from CDN!');
+                return;
+            }
+
+            socket = io(SOCKET_URL, {
+                transports: ['websocket', 'polling']
+            });
+
+            socket.on('connect', () => {
+                log('✅ Connected to server! Socket ID: ' + socket.id);
+                updateStatus(true);
+            });
+
+            socket.on('disconnect', () => {
+                log('❌ Disconnected from server');
+                updateStatus(false);
+            });
+
+            socket.on('connect_error', (error) => {
+                log('❌ Connection error: ' + error.message);
+                updateStatus(false);
+            });
+
+            socket.on('game-state', (state) => {
+                log('📥 Received game state: ' + JSON.stringify(state).substring(0, 100) + '...');
+            });
+        }
+
+        function joinParty() {
+            const partyCode = document.getElementById('partyCode').value;
+            if (!socket || !socket.connected) {
+                log('⚠️ Socket not connected!');
+                return;
+            }
+            log('🎮 Joining party: ' + partyCode);
+            socket.emit('join-party', partyCode);
+        }
+
+        function sendTestUpdate() {
+            const partyCode = document.getElementById('partyCode').value;
+            if (!socket || !socket.connected) {
+                log('⚠️ Socket not connected!');
+                return;
+            }
+            const testState = {
+                test: true,
+                timestamp: Date.now(),
+                lastAction: { type: 'test', timestamp: Date.now() }
+            };
+            log('📤 Sending test update to party: ' + partyCode);
+            socket.emit('update-state', { partyCode, state: testState });
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        // Initialize on page load
+        window.onload = () => {
+            log('🚀 Page loaded, initializing socket...');
+            initSocket();
+        };
+    </script>
+</body>
+
+</html>
