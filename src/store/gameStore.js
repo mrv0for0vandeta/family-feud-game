@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import questionsData from '../data/questions.json'
 
 const STORAGE_KEY = 'family-feud-state'
-const BROADCAST_CHANNEL = 'family-feud-sync'
 
 const defaultQuestions = questionsData
 
@@ -35,53 +34,29 @@ const initialState = loadState() || {
     lastAction: null,
 }
 
-// Create BroadcastChannel outside the store
-let channel = null
-try {
-    channel = new BroadcastChannel(BROADCAST_CHANNEL)
-} catch (e) {
-    console.warn('BroadcastChannel not supported:', e)
-}
-
 const useGameStore = create((set, get) => {
-    // Listen to BroadcastChannel messages
-    if (channel) {
-        channel.onmessage = (event) => {
-            console.log('Received broadcast:', event.data)
-            set(event.data)
-        }
-    }
-
-    // Listen to localStorage changes (fallback for cross-tab sync)
+    // Poll localStorage for changes every 500ms
     if (typeof window !== 'undefined') {
-        window.addEventListener('storage', (e) => {
-            if (e.key === STORAGE_KEY && e.newValue) {
-                try {
-                    const newState = JSON.parse(e.newValue)
-                    console.log('Received storage event:', newState)
+        let lastState = JSON.stringify(initialState)
+
+        setInterval(() => {
+            try {
+                const currentStorage = localStorage.getItem(STORAGE_KEY)
+                if (currentStorage && currentStorage !== lastState) {
+                    const newState = JSON.parse(currentStorage)
+                    lastState = currentStorage
                     set(newState)
-                } catch (err) {
-                    console.error('Failed to parse storage event:', err)
+                    console.log('State synced from localStorage')
                 }
+            } catch (err) {
+                console.error('Failed to sync state:', err)
             }
-        })
+        }, 500)
     }
 
     const broadcast = (newState) => {
         console.log('Broadcasting state:', newState)
         saveState(newState)
-        if (channel) {
-            try {
-                channel.postMessage(newState)
-            } catch (e) {
-                console.error('Failed to broadcast:', e)
-            }
-        }
-        // Trigger storage event manually for same-tab updates
-        window.dispatchEvent(new StorageEvent('storage', {
-            key: STORAGE_KEY,
-            newValue: JSON.stringify(newState)
-        }))
     }
 
     return {
@@ -140,7 +115,7 @@ const useGameStore = create((set, get) => {
             broadcast(newState)
 
             // Auto-clear the 3-strike overlay after 3 seconds
-            if (activeTeam && activeTeam.strikes === 2) { // Will become 3 after update
+            if (activeTeam && activeTeam.strikes === 2) {
                 setTimeout(() => {
                     const currentState = get()
                     const currentTeam = currentState.teams.find(t => t.id === state.activeTeamId)
@@ -206,7 +181,6 @@ const useGameStore = create((set, get) => {
 
         updateTeams: (teams) => {
             const state = get()
-            // Preserve strikes when updating teams
             const updatedTeams = teams.map(newTeam => {
                 const existingTeam = state.teams.find(t => t.id === newTeam.id)
                 return {
@@ -227,7 +201,6 @@ const useGameStore = create((set, get) => {
         nextQuestion: () => {
             const state = get()
             const nextIndex = (state.currentQuestionIndex + 1) % state.questions.length
-            // Clear all team strikes when moving to next question
             const teams = state.teams.map(t => ({ ...t, strikes: 0 }))
 
             const newState = {
@@ -249,7 +222,6 @@ const useGameStore = create((set, get) => {
             currentQuestion.answers = currentQuestion.answers.map(a => ({ ...a, revealed: false }))
             questions[state.currentQuestionIndex] = currentQuestion
 
-            // Clear all team strikes
             const teams = state.teams.map(t => ({ ...t, strikes: 0 }))
 
             const newState = {
