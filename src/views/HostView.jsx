@@ -98,7 +98,6 @@ function HostView() {
                                     onClick={() => {
                                         console.log('🔄 Manual reconnect triggered')
                                         reconnectParty()
-                                        setTimeout(() => window.location.reload(), 1000)
                                     }}
                                     className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-semibold text-sm"
                                 >
