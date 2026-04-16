@@ -6,7 +6,8 @@ export const loadSocketIO = async () => {
 
     try {
         // This will only be evaluated at runtime in the browser
-        const socketIO = await import('socket.io-client')
+        // @vite-ignore tells Vite to skip analyzing this import
+        const socketIO = await import(/* @vite-ignore */ 'socket.io-client')
         return socketIO.io || socketIO.default?.io || socketIO.default
     } catch (error) {
         console.error('Failed to load socket.io-client:', error)
