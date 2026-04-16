@@ -1,93 +1,130 @@
 # 🌐 Network Setup Guide
 
-## Cross-Machine Sync Setup
+## Cross-Machine Sync with Socket.IO
 
-For the Host and Display to sync across different machines, they need to share the same localStorage. Here are the options:
+The game uses Socket.IO for real-time synchronization between Host and Display across different machines.
 
-## Option 1: Same Network + Shared Server (Recommended)
+## Quick Setup for Different Machines
 
-### Setup Steps:
+### 1. Find Your Host Machine's IP Address
 
-1. **On Host Machine:**
-   ```bash
-   npm run dev
-   ```
-   Note the IP address (e.g., `192.168.1.100:3000`)
-
-2. **Update vite.config.js:**
-   ```javascript
-   export default defineConfig({
-     plugins: [react()],
-     server: {
-       host: '0.0.0.0', // Allow external connections
-       port: 3000
-     }
-   })
-   ```
-
-3. **Restart the server:**
-   ```bash
-   npm run dev
-   ```
-
-4. **On Display Machine:**
-   - Open browser
-   - Go to `http://192.168.1.100:3000` (use host machine's IP)
-   - Click "DISPLAY"
-
-Both machines will now share the same server and sync automatically!
-
-## Option 2: Build and Deploy
-
-### Build for Production:
+**Windows:**
 ```bash
-npm run build
+ipconfig
+```
+Look for "IPv4 Address" (e.g., `10.152.36.46`)
+
+**Mac/Linux:**
+```bash
+ifconfig
+```
+Look for "inet" address
+
+### 2. Update the .env File
+
+Create/edit `.env` file in the project root:
+```
+VITE_SOCKET_URL=http://YOUR_IP:3001
 ```
 
-### Serve on Local Network:
-```bash
-npx serve dist -l 3000
+Example:
+```
+VITE_SOCKET_URL=http://10.152.36.46:3001
 ```
 
-Then access from any device on the network using the host IP.
+### 3. Start Both Servers on Host Machine
 
-## Option 3: Cloud Deployment
+**Terminal 1 - Frontend:**
+```bash
+npm run dev
+```
 
-Deploy to:
-- **Vercel**: `vercel deploy`
-- **Netlify**: `netlify deploy`
-- **GitHub Pages**: Configure in repository settings
+**Terminal 2 - Socket.IO Server:**
+```bash
+npm run server
+```
 
-Then both machines access the same URL and sync via localStorage polling.
+### 4. Access from Other Machines
 
-## Current Sync Method
+**On Host Machine:**
+- Open: `http://YOUR_IP:3000` (e.g., `http://10.152.36.46:3000`)
+- Click "HOST"
 
-The app now uses **localStorage polling** (checks every 500ms):
-- ✅ Works on same machine (different tabs)
-- ✅ Works on same network (same server)
-- ✅ Works with cloud deployment
-- ✅ No external dependencies
+**On Display Machine (different computer):**
+- Open: `http://YOUR_IP:3000` (e.g., `http://10.152.36.46:3000`)
+- Click "DISPLAY"
+- Enter the party code from Host
 
-## Testing Sync
+Both machines will now sync in real-time! 🎉
 
-1. Open Host on one device
-2. Open Display on another device (same server)
-3. Make changes on Host
-4. Display updates within 500ms
+## Firewall Configuration
+
+If connection fails, you may need to allow ports through Windows Firewall:
+
+**Windows:**
+```powershell
+# Allow Vite dev server (port 3000)
+netsh advfirewall firewall add rule name="Vite Dev Server" dir=in action=allow protocol=TCP localport=3000
+
+# Allow Socket.IO server (port 3001)
+netsh advfirewall firewall add rule name="Socket.IO Server" dir=in action=allow protocol=TCP localport=3001
+```
 
 ## Troubleshooting
 
-### Sync not working?
-- Ensure both devices access the same URL
-- Check if localStorage is enabled
-- Verify network connectivity
-- Check browser console for errors
+### Display not updating?
 
-### Slow sync?
-- Adjust polling interval in `gameStore.js` (line 35)
-- Default is 500ms, can reduce to 200ms for faster sync
+1. **Check both servers are running:**
+   - Vite dev server on port 3000
+   - Socket.IO server on port 3001
 
-### Different networks?
-- Use cloud deployment (Vercel/Netlify)
-- Both devices access same URL
-- Sync works globally
+2. **Check browser console (F12):**
+   - Look for: `✅ Connected to game server`
+   - Look for: `🎮 Joined party: XXXXXX`
+
+3. **Verify IP address:**
+   - Make sure `.env` has correct IP
+   - Restart dev server after changing `.env`
+
+4. **Check firewall:**
+   - Ensure ports 3000 and 3001 are open
+   - Try temporarily disabling firewall to test
+
+5. **Same network:**
+   - Both machines must be on same WiFi/network
+   - Check if network allows device-to-device communication
+
+### Connection Errors?
+
+- **CORS errors**: Server already configured for CORS
+- **Connection refused**: Check if Socket.IO server is running
+- **Timeout**: Verify IP address and firewall settings
+
+## Testing Sync
+
+1. Open browser console (F12) on both machines
+2. On Host: Click "Reveal" for an answer
+3. Check Host console: `📤 Broadcasting state to party`
+4. Check Display console: `📥 Received state update`
+5. Display should update immediately
+
+## Production Deployment
+
+For production, deploy both frontend and Socket.IO server:
+
+### Option 1: Same Server
+Deploy to a VPS and run both servers
+
+### Option 2: Separate Servers
+- Frontend: Vercel/Netlify
+- Socket.IO: Heroku/Railway
+- Update `VITE_SOCKET_URL` to point to Socket.IO server
+
+## Current Configuration
+
+- **Frontend**: Vite dev server on `0.0.0.0:3000` (accessible from network)
+- **Backend**: Socket.IO server on `0.0.0.0:3001` (accessible from network)
+- **Sync Method**: Real-time via Socket.IO rooms
+- **Party System**: Each game has unique 6-character code
+
+
