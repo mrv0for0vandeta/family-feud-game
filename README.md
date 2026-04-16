@@ -6,6 +6,20 @@ A modern, local-first Family Feud game with dual-screen support, built with Reac
 ![React](https://img.shields.io/badge/React-18.3-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+## 🚀 Quick Deploy (1-Click)
+
+### Deploy Socket.IO Server to Render:
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/mrv0for0vandeta/family-feud-game)
+
+**After deploying:**
+1. Copy your Render URL (e.g., `https://family-feud-socket.onrender.com`)
+2. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+3. Add Environment Variable: `VITE_SOCKET_URL` = your Render URL
+4. Redeploy Vercel
+5. Done! 🎉
+
+---
+
 ## ✨ Features
 
 ### � Dual-Screen Architecture

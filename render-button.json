@@ -1,0 +1,18 @@
+{
+    "services": [
+        {
+            "type": "web",
+            "name": "family-feud-socket",
+            "env": "node",
+            "plan": "free",
+            "buildCommand": "npm install",
+            "startCommand": "npm run server",
+            "envVars": [
+                {
+                    "key": "NODE_ENV",
+                    "value": "production"
+                }
+            ]
+        }
+    ]
+}
