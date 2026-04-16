@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import questionsData from '../data/questions.json'
+import { initSocket, getSocket, isSocketConnected } from '../utils/socket'
 
 const defaultQuestions = questionsData
 
@@ -22,18 +23,11 @@ const initialState = {
     lastAction: null,
 }
 
-let socket = null
-let io = null
-
 const useGameStore = create((set, get) => {
     // Initialize socket connection (only in browser)
-    if (typeof window !== 'undefined' && !socket) {
-        // Dynamically import socket.io-client only in browser
-        import('socket.io-client').then((module) => {
-            io = module.io
-            socket = io(SOCKET_URL, {
-                transports: ['websocket', 'polling']
-            })
+    if (typeof window !== 'undefined') {
+        initSocket(SOCKET_URL).then((socket) => {
+            if (!socket) return
 
             socket.on('connect', () => {
                 console.log('✅ Connected to game server')
@@ -58,18 +52,17 @@ const useGameStore = create((set, get) => {
             socket.on('connect_error', (error) => {
                 console.error('Connection error:', error)
             })
-        }).catch((error) => {
-            console.error('Failed to load socket.io-client:', error)
         })
     }
 
     const broadcast = (newState) => {
+        const socket = getSocket()
         const partyCode = localStorage.getItem('partyCode')
-        if (socket && socket.connected && partyCode) {
+        if (socket && isSocketConnected() && partyCode) {
             socket.emit('update-state', { partyCode, state: newState })
             console.log('📤 Broadcasting state to party:', partyCode, 'Action:', newState.lastAction?.type)
         } else {
-            console.warn('⚠️ Cannot broadcast - Socket:', socket?.connected, 'Party:', partyCode)
+            console.warn('⚠️ Cannot broadcast - Socket:', isSocketConnected(), 'Party:', partyCode)
         }
     }
 
@@ -271,6 +264,7 @@ const useGameStore = create((set, get) => {
 
         // Reconnect to party (useful after page refresh)
         reconnectParty: () => {
+            const socket = getSocket()
             const partyCode = localStorage.getItem('partyCode')
             if (socket && partyCode) {
                 console.log('🔄 Reconnecting to party:', partyCode)
