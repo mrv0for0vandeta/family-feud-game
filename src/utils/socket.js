@@ -1,4 +1,6 @@
 // Socket.IO client wrapper
+import { loadSocketIO } from './socket-loader'
+
 let socket = null
 let io = null
 
@@ -8,9 +10,8 @@ export const initSocket = async (socketUrl) => {
     }
 
     try {
-        // Use a more explicit dynamic import that Vite can handle
-        const module = await import(/* @vite-ignore */ 'socket.io-client')
-        io = module.io || module.default?.io || module.default
+        // Load socket.io-client dynamically
+        io = await loadSocketIO()
 
         if (!io) {
             console.error('Failed to load socket.io-client: io function not found')
