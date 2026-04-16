@@ -6,10 +6,16 @@ import ScoreBoard from '../components/ScoreBoard'
 
 function BoardView() {
     const {
-        getCurrentQuestion
+        getCurrentQuestion,
+        reconnectParty
     } = useGameStore()
 
     const currentQuestion = getCurrentQuestion()
+
+    // Reconnect to party when component mounts
+    useEffect(() => {
+        reconnectParty()
+    }, [reconnectParty])
 
     useEffect(() => {
         const handleFullscreen = (e) => {

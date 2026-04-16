@@ -1,31 +1,17 @@
 import { create } from 'zustand'
+import { io } from 'socket.io-client'
 import questionsData from '../data/questions.json'
 
 const defaultQuestions = questionsData
 
-const getStorageKey = () => {
-    const partyCode = localStorage.getItem('partyCode')
-    return partyCode ? `family-feud-state-${partyCode}` : 'family-feud-state'
-}
+// Auto-detect socket URL based on current host
+// In production, set VITE_SOCKET_URL environment variable
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ||
+    (window.location.hostname === 'localhost'
+        ? 'http://localhost:3001'
+        : `http://${window.location.hostname}:3001`)
 
-const loadState = () => {
-    try {
-        const saved = localStorage.getItem(getStorageKey())
-        return saved ? JSON.parse(saved) : null
-    } catch {
-        return null
-    }
-}
-
-const saveState = (state) => {
-    try {
-        localStorage.setItem(getStorageKey(), JSON.stringify(state))
-    } catch (e) {
-        console.error('Failed to save state:', e)
-    }
-}
-
-const initialState = loadState() || {
+const initialState = {
     questions: defaultQuestions,
     currentQuestionIndex: 0,
     teams: [
@@ -37,29 +23,48 @@ const initialState = loadState() || {
     lastAction: null,
 }
 
-const useGameStore = create((set, get) => {
-    // Poll localStorage for changes every 300ms
-    if (typeof window !== 'undefined') {
-        let lastState = JSON.stringify(initialState)
+let socket = null
 
-        setInterval(() => {
-            try {
-                const currentStorage = localStorage.getItem(getStorageKey())
-                if (currentStorage && currentStorage !== lastState) {
-                    const newState = JSON.parse(currentStorage)
-                    lastState = currentStorage
-                    set(newState)
-                    console.log('State synced from party:', localStorage.getItem('partyCode'))
-                }
-            } catch (err) {
-                console.error('Failed to sync state:', err)
+const useGameStore = create((set, get) => {
+    // Initialize socket connection
+    if (typeof window !== 'undefined' && !socket) {
+        socket = io(SOCKET_URL, {
+            transports: ['websocket', 'polling']
+        })
+
+        socket.on('connect', () => {
+            console.log('✅ Connected to game server')
+            const partyCode = localStorage.getItem('partyCode')
+            if (partyCode) {
+                socket.emit('join-party', partyCode)
+                console.log('🎮 Joined party:', partyCode)
+            } else {
+                console.warn('⚠️ No party code found in localStorage')
             }
-        }, 300)
+        })
+
+        socket.on('game-state', (state) => {
+            console.log('📥 Received state update:', state.lastAction?.type || 'full-state')
+            set(state)
+        })
+
+        socket.on('disconnect', () => {
+            console.log('❌ Disconnected from server')
+        })
+
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error)
+        })
     }
 
     const broadcast = (newState) => {
-        console.log('Broadcasting to party:', localStorage.getItem('partyCode'))
-        saveState(newState)
+        const partyCode = localStorage.getItem('partyCode')
+        if (socket && socket.connected && partyCode) {
+            socket.emit('update-state', { partyCode, state: newState })
+            console.log('📤 Broadcasting state to party:', partyCode, 'Action:', newState.lastAction?.type)
+        } else {
+            console.warn('⚠️ Cannot broadcast - Socket:', socket?.connected, 'Party:', partyCode)
+        }
     }
 
     return {
@@ -256,6 +261,17 @@ const useGameStore = create((set, get) => {
         getCurrentQuestion: () => {
             const state = get()
             return state.questions[state.currentQuestionIndex]
+        },
+
+        // Reconnect to party (useful after page refresh)
+        reconnectParty: () => {
+            const partyCode = localStorage.getItem('partyCode')
+            if (socket && partyCode) {
+                console.log('🔄 Reconnecting to party:', partyCode)
+                socket.emit('join-party', partyCode)
+            } else {
+                console.warn('⚠️ Cannot reconnect - Socket:', !!socket, 'Party:', partyCode)
+            }
         }
     }
 })

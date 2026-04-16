@@ -17,11 +17,17 @@ function HostView() {
         clearTeamStrikes,
         teams,
         activeTeamId,
-        currentBank
+        currentBank,
+        reconnectParty
     } = useGameStore()
 
     const currentQuestion = getCurrentQuestion()
     const [view, setView] = useState('game')
+
+    // Reconnect to party when component mounts
+    useEffect(() => {
+        reconnectParty()
+    }, [reconnectParty])
 
     useEffect(() => {
         const handleKeyPress = (e) => {
