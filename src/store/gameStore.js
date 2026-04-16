@@ -1,13 +1,16 @@
 import { create } from 'zustand'
 import questionsData from '../data/questions.json'
 
-const STORAGE_KEY = 'family-feud-state'
-
 const defaultQuestions = questionsData
+
+const getStorageKey = () => {
+    const partyCode = localStorage.getItem('partyCode')
+    return partyCode ? `family-feud-state-${partyCode}` : 'family-feud-state'
+}
 
 const loadState = () => {
     try {
-        const saved = localStorage.getItem(STORAGE_KEY)
+        const saved = localStorage.getItem(getStorageKey())
         return saved ? JSON.parse(saved) : null
     } catch {
         return null
@@ -16,7 +19,7 @@ const loadState = () => {
 
 const saveState = (state) => {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+        localStorage.setItem(getStorageKey(), JSON.stringify(state))
     } catch (e) {
         console.error('Failed to save state:', e)
     }
@@ -35,27 +38,27 @@ const initialState = loadState() || {
 }
 
 const useGameStore = create((set, get) => {
-    // Poll localStorage for changes every 500ms
+    // Poll localStorage for changes every 300ms
     if (typeof window !== 'undefined') {
         let lastState = JSON.stringify(initialState)
 
         setInterval(() => {
             try {
-                const currentStorage = localStorage.getItem(STORAGE_KEY)
+                const currentStorage = localStorage.getItem(getStorageKey())
                 if (currentStorage && currentStorage !== lastState) {
                     const newState = JSON.parse(currentStorage)
                     lastState = currentStorage
                     set(newState)
-                    console.log('State synced from localStorage')
+                    console.log('State synced from party:', localStorage.getItem('partyCode'))
                 }
             } catch (err) {
                 console.error('Failed to sync state:', err)
             }
-        }, 500)
+        }, 300)
     }
 
     const broadcast = (newState) => {
-        console.log('Broadcasting state:', newState)
+        console.log('Broadcasting to party:', localStorage.getItem('partyCode'))
         saveState(newState)
     }
 

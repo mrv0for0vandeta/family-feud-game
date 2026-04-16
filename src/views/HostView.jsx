@@ -55,7 +55,15 @@ function HostView() {
         <div className="min-h-screen bg-gray-900 text-white p-6">
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-4xl font-bold text-feud-gold">Family Feud - Host Control</h1>
+                    <div>
+                        <h1 className="text-4xl font-bold text-feud-gold mb-2">Family Feud - Host Control</h1>
+                        <div className="bg-orange-600 border-2 border-yellow-400 rounded-lg px-4 py-2 inline-block">
+                            <span className="text-sm text-yellow-200 font-semibold mr-2">PARTY CODE:</span>
+                            <span className="text-2xl font-bold text-white tracking-widest">
+                                {localStorage.getItem('partyCode') || 'N/A'}
+                            </span>
+                        </div>
+                    </div>
                     <div className="flex gap-3">
                         <button
                             onClick={() => setView('game')}
