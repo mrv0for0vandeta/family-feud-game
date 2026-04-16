@@ -45,12 +45,37 @@ const useGameStore = create((set, get) => {
                 set(state)
             })
 
-            socket.on('disconnect', () => {
-                console.log('❌ Disconnected from server')
+            socket.on('disconnect', (reason) => {
+                console.log('❌ Disconnected from server. Reason:', reason)
+                // Auto-reconnect if not intentional disconnect
+                if (reason === 'io server disconnect') {
+                    // Server disconnected, manually reconnect
+                    socket.connect()
+                }
             })
 
             socket.on('connect_error', (error) => {
                 console.error('Connection error:', error)
+            })
+
+            socket.on('reconnect', (attemptNumber) => {
+                console.log('🔄 Reconnected after', attemptNumber, 'attempts')
+                const partyCode = localStorage.getItem('partyCode')
+                if (partyCode) {
+                    socket.emit('join-party', partyCode)
+                }
+            })
+
+            socket.on('reconnect_attempt', (attemptNumber) => {
+                console.log('🔄 Reconnection attempt', attemptNumber)
+            })
+
+            socket.on('reconnect_error', (error) => {
+                console.error('❌ Reconnection error:', error)
+            })
+
+            socket.on('reconnect_failed', () => {
+                console.error('❌ Reconnection failed')
             })
         })
     }
