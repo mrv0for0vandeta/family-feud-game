@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ExternalLink, RotateCcw, Trophy, AlertCircle, SkipForward, Edit3, Gamepad2, Users } from 'lucide-react'
+import { ExternalLink, RotateCcw, Trophy, AlertCircle, SkipForward, Edit3, Gamepad2, Users, Wifi, WifiOff } from 'lucide-react'
 import useGameStore from '../store/gameStore'
 import AudioManager from '../components/AudioManager'
 import QuestionEditor from '../components/QuestionEditor'
 import TeamConfig from '../components/TeamConfig'
+import { getSocket, isSocketConnected } from '../utils/socket'
 
 function HostView() {
     const {
@@ -23,6 +24,22 @@ function HostView() {
 
     const currentQuestion = getCurrentQuestion()
     const [view, setView] = useState('game')
+    const [socketStatus, setSocketStatus] = useState({ connected: false, id: null })
+
+    // Check socket status periodically
+    useEffect(() => {
+        const checkSocket = () => {
+            const socket = getSocket()
+            setSocketStatus({
+                connected: isSocketConnected(),
+                id: socket?.id || null
+            })
+        }
+
+        checkSocket()
+        const interval = setInterval(checkSocket, 1000)
+        return () => clearInterval(interval)
+    }, [])
 
     // Reconnect to party when component mounts
     useEffect(() => {
@@ -63,11 +80,31 @@ function HostView() {
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-4xl font-bold text-feud-gold mb-2">Family Feud - Host Control</h1>
-                        <div className="bg-orange-600 border-2 border-yellow-400 rounded-lg px-4 py-2 inline-block">
-                            <span className="text-sm text-yellow-200 font-semibold mr-2">PARTY CODE:</span>
-                            <span className="text-2xl font-bold text-white tracking-widest">
-                                {localStorage.getItem('partyCode') || 'N/A'}
-                            </span>
+                        <div className="flex gap-3 items-center">
+                            <div className="bg-orange-600 border-2 border-yellow-400 rounded-lg px-4 py-2 inline-block">
+                                <span className="text-sm text-yellow-200 font-semibold mr-2">PARTY CODE:</span>
+                                <span className="text-2xl font-bold text-white tracking-widest">
+                                    {localStorage.getItem('partyCode') || 'N/A'}
+                                </span>
+                            </div>
+                            <div className={`border-2 rounded-lg px-4 py-2 inline-flex items-center gap-2 ${socketStatus.connected ? 'bg-green-600 border-green-400' : 'bg-red-600 border-red-400'}`}>
+                                {socketStatus.connected ? <Wifi size={20} /> : <WifiOff size={20} />}
+                                <span className="text-sm font-semibold">
+                                    {socketStatus.connected ? 'Connected' : 'Disconnected'}
+                                </span>
+                            </div>
+                            {!socketStatus.connected && (
+                                <button
+                                    onClick={() => {
+                                        console.log('🔄 Manual reconnect triggered')
+                                        reconnectParty()
+                                        setTimeout(() => window.location.reload(), 1000)
+                                    }}
+                                    className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-semibold text-sm"
+                                >
+                                    Reconnect
+                                </button>
+                            )}
                         </div>
                     </div>
                     <div className="flex gap-3">
