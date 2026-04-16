@@ -9,14 +9,9 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [],
       output: {
         manualChunks: undefined
       }
-    },
-    commonjsOptions: {
-      include: [/node_modules/],
-      transformMixedEsModules: true
     }
   },
   optimizeDeps: {
