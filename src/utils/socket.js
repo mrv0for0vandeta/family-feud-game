@@ -8,8 +8,15 @@ export const initSocket = async (socketUrl) => {
     }
 
     try {
-        const module = await import('socket.io-client')
-        io = module.io
+        // Use a more explicit dynamic import that Vite can handle
+        const module = await import(/* @vite-ignore */ 'socket.io-client')
+        io = module.io || module.default?.io || module.default
+
+        if (!io) {
+            console.error('Failed to load socket.io-client: io function not found')
+            return null
+        }
+
         socket = io(socketUrl, {
             transports: ['websocket', 'polling']
         })
