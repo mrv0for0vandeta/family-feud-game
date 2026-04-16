@@ -1,0 +1,508 @@
+[
+  {
+    "id": 1,
+    "question": "Quel est le meilleur endroit pour faire une sieste « incognito » sur le campus ?",
+    "answers": [
+      {
+        "text": "Foyer Madani",
+        "points": 25,
+        "revealed": false
+      },
+      {
+        "text": "Ma Chambre",
+        "points": 25,
+        "revealed": false
+      },
+      {
+        "text": "Pouf De La Bu",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "R6 Foyer",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Le Banc Derrière La Salle De Sport",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Canapé De Biblio",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Foyer 7da Madani",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Canapes De La Bu",
+        "points": 8,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Nommez une activité que font les étudiants au lieu de réviser en bibliothèque.",
+    "answers": [
+      {
+        "text": "Parler",
+        "points": 25,
+        "revealed": false
+      },
+      {
+        "text": "Gossip",
+        "points": 17,
+        "revealed": false
+      },
+      {
+        "text": "Discuter",
+        "points": 17,
+        "revealed": false
+      },
+      {
+        "text": "Parler Sur Les Gens",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Billard Ou Parler",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Discuter Et Manger",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Monopoly",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Netwerker",
+        "points": 8,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Quelle est la première chose que vous faites en arrivant sur le campus ?",
+    "answers": [
+      {
+        "text": "Appeler Golfette",
+        "points": 18,
+        "revealed": false
+      },
+      {
+        "text": "Madani",
+        "points": 18,
+        "revealed": false
+      },
+      {
+        "text": "Je Range Ma Valise",
+        "points": 18,
+        "revealed": false
+      },
+      {
+        "text": "Donner La Carte Naps Pour Accéder",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Je Pars Au Resto",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Me Rendre À Ma Chambre",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Aller Chez Madani",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Gate 2 Scan",
+        "points": 9,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "Citez un mot que vous entendez 50 fois par jour à l’UM6P.",
+    "answers": [
+      {
+        "text": "Madani",
+        "points": 44,
+        "revealed": false
+      },
+      {
+        "text": "Validation",
+        "points": 22,
+        "revealed": false
+      },
+      {
+        "text": "Scolarité",
+        "points": 6,
+        "revealed": false
+      },
+      {
+        "text": "T Ou",
+        "points": 6,
+        "revealed": false
+      },
+      {
+        "text": "Reading Week",
+        "points": 6,
+        "revealed": false
+      },
+      {
+        "text": "-bu/biblio",
+        "points": 6,
+        "revealed": false
+      },
+      {
+        "text": "Ta/ It / Votez Ecopolis",
+        "points": 6,
+        "revealed": false
+      },
+      {
+        "text": "Bu, Restau, Td",
+        "points": 6,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Quel est le moyen de transport le plus « stylé » sur le campus ?",
+    "answers": [
+      {
+        "text": "Golfette",
+        "points": 60,
+        "revealed": false
+      },
+      {
+        "text": "La Golfette",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "Nvl Golfette",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Nouveau Bus Électrique",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Golfette (rien En Vrai)",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Bmdouble Pieds",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "N/a",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Les Nouvelles Golfettes Énormes",
+        "points": 5,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "Citez une rumeur qui circule toujours sur les résidences.",
+    "answers": [
+      {
+        "text": "Mixité",
+        "points": 42,
+        "revealed": false
+      },
+      {
+        "text": "Les Vols",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "R8 C'est La Campagne",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Hantés",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Microphones In The Residences",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Vol",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "Elle Sont Hantées",
+        "points": 8,
+        "revealed": false
+      },
+      {
+        "text": "N/a",
+        "points": 8,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Quel est le « dress code » non officiel d’un étudiant en période de partiels ?",
+    "answers": [
+      {
+        "text": "Pyjama",
+        "points": 36,
+        "revealed": false
+      },
+      {
+        "text": "Pyjamas",
+        "points": 21,
+        "revealed": false
+      },
+      {
+        "text": "Crocs",
+        "points": 7,
+        "revealed": false
+      },
+      {
+        "text": "Pjs Et Manta",
+        "points": 7,
+        "revealed": false
+      },
+      {
+        "text": "Jogging Sweat",
+        "points": 7,
+        "revealed": false
+      },
+      {
+        "text": "Jogging/teeshirt Ou Sweet",
+        "points": 7,
+        "revealed": false
+      },
+      {
+        "text": "Jogging/sweatshirt",
+        "points": 7,
+        "revealed": false
+      },
+      {
+        "text": "Jogging Hoodie",
+        "points": 7,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Citez un concept éco que vous n’avez toujours pas compris après 2 ans.",
+    "answers": [
+      {
+        "text": "Élasticité",
+        "points": 20,
+        "revealed": false
+      },
+      {
+        "text": "Déflation",
+        "points": 20,
+        "revealed": false
+      },
+      {
+        "text": "Extranillities",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "Inflation (je Rigole Je Sais Pas)",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "Offre Et La Demade",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "Le Système De Notation De Touche",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "Deadline",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "Fonction Ces",
+        "points": 10,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "Citez un mot qui finit par « -isme » et qui fait peur aux étudiants.",
+    "answers": [
+      {
+        "text": "Féminisme",
+        "points": 27,
+        "revealed": false
+      },
+      {
+        "text": "Criticisme",
+        "points": 18,
+        "revealed": false
+      },
+      {
+        "text": "Behaviorisme",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Terorisme ???",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Procrastinisme",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Plagiarisme Et Absenteisme",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Dorotheisme",
+        "points": 9,
+        "revealed": false
+      },
+      {
+        "text": "Game Thérrorisme",
+        "points": 9,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "Quel est l’outil (logiciel) que les économistes préfèrent à leur propre famille ?",
+    "answers": [
+      {
+        "text": "R",
+        "points": 38,
+        "revealed": false
+      },
+      {
+        "text": "Stata",
+        "points": 29,
+        "revealed": false
+      },
+      {
+        "text": "Excel",
+        "points": 10,
+        "revealed": false
+      },
+      {
+        "text": "R Ou Exel",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Word",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Python",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Stata / Excel / R",
+        "points": 5,
+        "revealed": false
+      },
+      {
+        "text": "Claude",
+        "points": 5,
+        "revealed": false
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "Citez une question qu’on pose toujours en TD pour gagner du temps.",
+    "answers": [
+      {
+        "text": "L2🤪",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Est Ce Que Vous Pouvez Reprendre Ce Que Vous Dites?",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Aucune Question Lol",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Est Ce Que Le Final Est Cumulatif?",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Is This Graded?",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Est-ce Que C'est Noté",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Est Ce Que Vous Pouvez Répéter La Question Svp ?",
+        "points": 13,
+        "revealed": false
+      },
+      {
+        "text": "Mr Par Rapport Aux Examens ....",
+        "points": 13,
+        "revealed": false
+      }
+    ]
+  }
+]
