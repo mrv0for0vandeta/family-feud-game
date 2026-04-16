@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { io } from 'socket.io-client'
 import questionsData from '../data/questions.json'
 
 const defaultQuestions = questionsData
@@ -7,9 +6,9 @@ const defaultQuestions = questionsData
 // Auto-detect socket URL based on current host
 // In production, set VITE_SOCKET_URL environment variable
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ||
-    (window.location.hostname === 'localhost'
+    (typeof window !== 'undefined' && window.location.hostname === 'localhost'
         ? 'http://localhost:3001'
-        : `http://${window.location.hostname}:3001`)
+        : `http://${typeof window !== 'undefined' ? window.location.hostname : 'localhost'}:3001`)
 
 const initialState = {
     questions: defaultQuestions,
@@ -24,36 +23,43 @@ const initialState = {
 }
 
 let socket = null
+let io = null
 
 const useGameStore = create((set, get) => {
-    // Initialize socket connection
+    // Initialize socket connection (only in browser)
     if (typeof window !== 'undefined' && !socket) {
-        socket = io(SOCKET_URL, {
-            transports: ['websocket', 'polling']
-        })
+        // Dynamically import socket.io-client only in browser
+        import('socket.io-client').then((module) => {
+            io = module.io
+            socket = io(SOCKET_URL, {
+                transports: ['websocket', 'polling']
+            })
 
-        socket.on('connect', () => {
-            console.log('✅ Connected to game server')
-            const partyCode = localStorage.getItem('partyCode')
-            if (partyCode) {
-                socket.emit('join-party', partyCode)
-                console.log('🎮 Joined party:', partyCode)
-            } else {
-                console.warn('⚠️ No party code found in localStorage')
-            }
-        })
+            socket.on('connect', () => {
+                console.log('✅ Connected to game server')
+                const partyCode = localStorage.getItem('partyCode')
+                if (partyCode) {
+                    socket.emit('join-party', partyCode)
+                    console.log('🎮 Joined party:', partyCode)
+                } else {
+                    console.warn('⚠️ No party code found in localStorage')
+                }
+            })
 
-        socket.on('game-state', (state) => {
-            console.log('📥 Received state update:', state.lastAction?.type || 'full-state')
-            set(state)
-        })
+            socket.on('game-state', (state) => {
+                console.log('📥 Received state update:', state.lastAction?.type || 'full-state')
+                set(state)
+            })
 
-        socket.on('disconnect', () => {
-            console.log('❌ Disconnected from server')
-        })
+            socket.on('disconnect', () => {
+                console.log('❌ Disconnected from server')
+            })
 
-        socket.on('connect_error', (error) => {
-            console.error('Connection error:', error)
+            socket.on('connect_error', (error) => {
+                console.error('Connection error:', error)
+            })
+        }).catch((error) => {
+            console.error('Failed to load socket.io-client:', error)
         })
     }
 
