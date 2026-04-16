@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "process-excel": "node scripts/processExcel.js"
+    "process-excel": "node scripts/processExcel.js",
+    "server": "node server.js"
   },
   "dependencies": {
     "framer-motion": "^11.0.0",
@@ -15,6 +16,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.22.0",
+    "socket.io-client": "^4.8.3",
     "xlsx": "^0.18.5",
     "zustand": "^4.5.0"
   },
@@ -23,7 +25,10 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
+    "cors": "^2.8.6",
+    "express": "^4.22.1",
     "postcss": "^8.4.35",
+    "socket.io": "^4.8.3",
     "tailwindcss": "^3.4.1",
     "vite": "^5.1.4"
   }
