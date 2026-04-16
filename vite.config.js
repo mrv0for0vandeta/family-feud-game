@@ -9,12 +9,18 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      // Externalize socket.io-client - it will be loaded at runtime
+      external: ['socket.io-client'],
       output: {
-        manualChunks: undefined
+        manualChunks: undefined,
+        // Provide global variable name for external modules
+        globals: {
+          'socket.io-client': 'io'
+        }
       }
     }
   },
   optimizeDeps: {
-    include: ['socket.io-client']
+    exclude: ['socket.io-client']
   }
 })

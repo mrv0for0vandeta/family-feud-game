@@ -1,12 +1,17 @@
-// Lazy loader for socket.io-client to avoid build-time resolution
+// Lazy loader for socket.io-client
+// Socket.IO is loaded from CDN in index.html and available as window.io
 export const loadSocketIO = async () => {
     if (typeof window === 'undefined') {
         return null
     }
 
     try {
-        // This will only be evaluated at runtime in the browser
-        // @vite-ignore tells Vite to skip analyzing this import
+        // Check if socket.io is available from CDN
+        if (window.io) {
+            return window.io
+        }
+
+        // Fallback: try dynamic import if CDN failed
         const socketIO = await import(/* @vite-ignore */ 'socket.io-client')
         return socketIO.io || socketIO.default?.io || socketIO.default
     } catch (error) {
