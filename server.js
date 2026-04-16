@@ -49,7 +49,12 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-httpServer.listen(PORT, '0.0.0.0', () => {
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '0.0.0.0';
+
+httpServer.listen(PORT, HOST, () => {
     console.log(`🚀 Socket server running on port ${PORT}`);
-    console.log(`📡 Accessible on network at http://<your-ip>:${PORT}`);
+    console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`📡 Accessible on network at http://<your-ip>:${PORT}`);
+    }
 });
